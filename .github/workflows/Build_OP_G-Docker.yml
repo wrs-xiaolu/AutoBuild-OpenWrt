@@ -2,10 +2,9 @@
 # Description: Build OpenWrt using GitHub Actions
 # Lisence: MIT
 # Author: eSirPlayground
-# Youtube Channel: https://goo.gl/fvkdwm 
 #=================================================
 
-name: Build_NanoPi_R2S
+name: Build_G-Docker
 
 on: 
   release:
@@ -18,8 +17,8 @@ on:
   #schedule:
   #  - cron: 0 8 * * 5
   
-  #watch:
-  #  types: [started]
+  watch:
+    types: [started]
 
 jobs:
   build:
@@ -58,7 +57,7 @@ jobs:
         sudo -E apt-get clean
     - name: Clone source code
       env: 
-        REPO_URL: https://github.com/coolsnowwolf/lede
+        REPO_URL: https://github.com/Lienol/openwrt
         REPO_BRANCH: master
       run: |
         git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
@@ -71,15 +70,15 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
         ./scripts/feeds install -a
-    #- name: Import external feeds
-    #  working-directory: ./openwrt
-    #  run: |
-    #    git clone https://github.com/xiaorouji/openwrt-passwall.git package/lienol
-    #    git clone "your_github_link" package/"your_folder_name"      
+    - name: Import external feeds
+      working-directory: ./openwrt
+      run: |
+        git clone https://github.com/kenzok8/openwrt-packages.git package/
+        git clone https://github.com/kenzok8/small package/
 
-    - name: Configuration Customization - Build_NanoPi_R2S
+    - name: Configuration Customization - Build_G-Docker
       env:
-        CONFIG_FILE: 'NanoPi_R2S.config'
+        CONFIG_FILE: 'G-Docker.config'
       run: |
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         chmod +x ./customize.sh && ./customize.sh
